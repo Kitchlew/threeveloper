@@ -206,7 +206,11 @@ import wig1Source from '../models/wigs/wig1.glb'
 import wig2Source from '../models/wigs/wig2.glb'
 import wig3Source from '../models/wigs/wig3.glb'
 import wig4Source from '../models/wigs/wig4.glb'
-
+//Camp
+import campBaseSource from '../models/camp/FireAnim.glb'
+import avatarBaseSource from '../models/camp/Avatar.glb'
+import progressBaseSource from '../models/camp/Progress.glb'
+import videoBaseSource from '../models/camp/Video.glb'
 // // Egg
 // import eggBaseSource from '../models/egg/base.glb'
 // import eggCollisionSource from '../models/egg/collision.glb'
@@ -221,6 +225,11 @@ export default class Resources extends EventEmitter
         this.items = {}
 
         this.loader.load([
+                 //Camp
+                 { name: 'campBase', source: campBaseSource },
+                 { name: 'avatarBase', source: avatarBaseSource },
+                 { name: 'progressBase', source: progressBaseSource },
+                 { name: 'videoBase', source: videoBaseSource },
             // Matcaps
             { name: 'matcapBeige', source: matcapBeigeSource, type: 'texture' },
             { name: 'matcapBlack', source: matcapBlackSource, type: 'texture' },

@@ -35,11 +35,7 @@ export default class Zones
         this.tester.x = 0
         this.tester.y = 0
 
-        this.time.on('tick', () =>
-        {
-            this.tester.x = this.physics.car.chassis.body.position.x
-            this.tester.y = this.physics.car.chassis.body.position.y
-        })
+       
     }
 
     setItems()

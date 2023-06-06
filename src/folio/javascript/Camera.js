@@ -184,7 +184,7 @@ export default class Camera
         this.pan.needsUpdate = false
         this.pan.hitMesh = new THREE.Mesh(
             new THREE.PlaneBufferGeometry(500, 500, 1, 1),
-            new THREE.MeshBasicMaterial({ color: 0xff0000, wireframe: true, visible: false })
+            new THREE.MeshBasicMaterial({ color: 0xD0CECE, wireframe: true, visible: false })
         )
         this.container.add(this.pan.hitMesh)
 

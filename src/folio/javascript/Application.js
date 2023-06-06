@@ -117,14 +117,6 @@ export default class Application
 
         this.scene.add(this.camera.container)
 
-        this.time.on('tick', () =>
-        {
-            if(this.world && this.world.car)
-            {
-                this.camera.target.x = this.world.car.chassis.object.position.x
-                this.camera.target.y = this.world.car.chassis.object.position.y
-            }
-        })
     }
 
     setPasses()
@@ -250,8 +242,7 @@ export default class Application
         {
             if(this.world.physics)
             {
-                this.title.absolutePosition += this.world.physics.car.forwardSpeed
-
+               
                 if(this.title.absolutePosition < 0)
                 {
                     this.title.absolutePosition = 0

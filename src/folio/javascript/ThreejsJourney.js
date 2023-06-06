@@ -36,7 +36,7 @@ export default class ThreejsJourney
         {
             if(this.world.physics)
             {
-                this.traveledDistance += this.world.physics.car.forwardSpeed
+                //this.traveledDistance += this.world.physics.car.forwardSpeed
 
                 if(!this.config.touch && !this.shown && this.traveledDistance > this.minTraveledDistance)
                 {

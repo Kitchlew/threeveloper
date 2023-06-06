@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-
+import { createScreen } from '../../screen'
 export default class IntroSection
 {
     constructor(_options)
@@ -15,18 +15,29 @@ export default class IntroSection
         this.debug = _options.debug
         this.x = _options.x
         this.y = _options.y
+        this.name = _options.name
+        this.geometries = _options.geometries
+        this.meshes = _options.meshes
+        this.debug = _options.debug
+        this.imageSources = _options.imageSources
+        this.floorTexture = _options.floorTexture
+        this.link = _options.link
+        this.distinctions = _options.distinctions
+
+       
 
         // Set up
         this.container = new THREE.Object3D()
         this.container.matrixAutoUpdate = false
-        this.container.updateMatrix()
+        //this.container.updateMatrix()
 
-        // this.setStatic()
+        this.setStatic()
         this.setInstructions()
-        this.setOtherInstructions()
-        this.setTitles()
-        this.setTiles()
+       
+        
+        
         this.setDikes()
+        
     }
 
     setStatic()
@@ -48,241 +59,85 @@ export default class IntroSection
          * Arrows
          */
         this.instructions.arrows = {}
+           // Label
+           this.instructions.arrows.label = {}
 
-        // Label
-        this.instructions.arrows.label = {}
 
-        this.instructions.arrows.label.texture = this.config.touch ? this.resources.items.introInstructionsControlsTexture : this.resources.items.introInstructionsArrowsTexture
-        this.instructions.arrows.label.texture.magFilter = THREE.NearestFilter
-        this.instructions.arrows.label.texture.minFilter = THREE.LinearFilter
-
-        this.instructions.arrows.label.material = new THREE.MeshBasicMaterial({ transparent: true, alphaMap: this.instructions.arrows.label.texture, color: 0xffffff, depthWrite: false, opacity: 0 })
-
-        this.instructions.arrows.label.geometry = this.resources.items.introInstructionsLabels.scene.children.find((_mesh) => _mesh.name === 'arrows').geometry
-
-        this.instructions.arrows.label.mesh = new THREE.Mesh(this.instructions.arrows.label.geometry, this.instructions.arrows.label.material)
-        this.container.add(this.instructions.arrows.label.mesh)
-
-        if(!this.config.touch)
-        {
+        
+       
             // Keys
-            this.instructions.arrows.up = this.objects.add({
-                base: this.resources.items.introArrowKeyBase.scene,
+            
+            
+            this.instructions.arrows.down = this.objects.add({
+                base: this.resources.items.campBase.scene,
                 collision: this.resources.items.introArrowKeyCollision.scene,
                 offset: new THREE.Vector3(0, 0, 0),
-                rotation: new THREE.Euler(0, 0, 0),
+                rotation: new THREE.Euler(1.5, 0,0),
                 duplicated: true,
-                shadow: { sizeX: 1, sizeY: 1, offsetZ: - 0.2, alpha: 0.5 },
+                
                 mass: 1.5,
                 soundName: 'brick'
             })
-            this.instructions.arrows.down = this.objects.add({
-                base: this.resources.items.introArrowKeyBase.scene,
-                collision: this.resources.items.introArrowKeyCollision.scene,
-                offset: new THREE.Vector3(0, - 0.8, 0),
-                rotation: new THREE.Euler(0, 0, Math.PI),
-                duplicated: true,
-                shadow: { sizeX: 1, sizeY: 1, offsetZ: - 0.2, alpha: 0.5 },
-                mass: 1.5,
-                soundName: 'brick'
-            })
-            this.instructions.arrows.left = this.objects.add({
-                base: this.resources.items.introArrowKeyBase.scene,
-                collision: this.resources.items.introArrowKeyCollision.scene,
-                offset: new THREE.Vector3(- 0.8, - 0.8, 0),
-                rotation: new THREE.Euler(0, 0, Math.PI * 0.5),
-                duplicated: true,
-                shadow: { sizeX: 1, sizeY: 1, offsetZ: - 0.2, alpha: 0.5 },
-                mass: 1.5,
-                soundName: 'brick'
-            })
+            
             this.instructions.arrows.right = this.objects.add({
-                base: this.resources.items.introArrowKeyBase.scene,
+                base: this.resources.items.avatarBase.scene,
                 collision: this.resources.items.introArrowKeyCollision.scene,
-                offset: new THREE.Vector3(0.8, - 0.8, 0),
+                offset: new THREE.Vector3(0.8, - 0.8, -.20),
                 rotation: new THREE.Euler(0, 0, - Math.PI * 0.5),
                 duplicated: true,
-                shadow: { sizeX: 1, sizeY: 1, offsetZ: - 0.2, alpha: 0.5 },
+                
                 mass: 1.5,
                 soundName: 'brick'
             })
-        }
+        
+            this.campfire=this.objects.add({
+                base: this.resources.items.introStaticBase.scene,
+                collision: this.resources.items.introStaticCollision.scene,
+                floorShadowTexture: this.resources.items.introStaticFloorShadowTexture,
+                offset: new THREE.Vector3(0, 0, 0),
+                mass: 0
+            })
+            this.campfire.container = new THREE.Object3D()
+                this.campfire.container.position.x = this.x +this.campfire.x
+                this.campfire.container.position.y = this.y +this.campfire.y
+                this.campfire.container.matrixAutoUpdate = false
+                this.campfire.container.updateMatrix()
+               
+                this.container.add(this.campfire.container)
+       
+            this.campfire.area=this.areas.add({
+                position: new THREE.Vector2(this.campfire.x,this.campfire.y),
+                halfExtents: new THREE.Vector2(5,5)
+            })
+            this.campfire.count=0
+            this.campfire.area.on('interact', () =>
+            {
+                const screen = createScreen()
+                this.campfire.screen = screen
+                if (this.campfire.count==0){
+
+                this.campfire.screen.position.x = 0}
+                else {
+
+                    this.campfire.screen.position.x = 9*this.campfire.count
+                }
+                this.campfire.screen.position.y = -20
+           
+                
+               this.campfire.count++
+       
+                this.container.add(this.campfire.screen)
+                
+                
+          
+    
+            })
+            
+      
     }
 
-    setOtherInstructions()
-    {
-        if(this.config.touch)
-        {
-            return
-        }
-
-        this.otherInstructions = {}
-        this.otherInstructions.x = 16
-        this.otherInstructions.y = - 2
-
-        // Container
-        this.otherInstructions.container = new THREE.Object3D()
-        this.otherInstructions.container.position.x = this.otherInstructions.x
-        this.otherInstructions.container.position.y = this.otherInstructions.y
-        this.otherInstructions.container.matrixAutoUpdate = false
-        this.otherInstructions.container.updateMatrix()
-        this.container.add(this.otherInstructions.container)
-
-        // Label
-        this.otherInstructions.label = {}
-
-        this.otherInstructions.label.geometry = new THREE.PlaneBufferGeometry(6, 6, 1, 1)
-
-        this.otherInstructions.label.texture = this.resources.items.introInstructionsOtherTexture
-        this.otherInstructions.label.texture.magFilter = THREE.NearestFilter
-        this.otherInstructions.label.texture.minFilter = THREE.LinearFilter
-
-        this.otherInstructions.label.material = new THREE.MeshBasicMaterial({ transparent: true, alphaMap: this.otherInstructions.label.texture, color: 0xffffff, depthWrite: false, opacity: 0 })
-
-        this.otherInstructions.label.mesh = new THREE.Mesh(this.otherInstructions.label.geometry, this.otherInstructions.label.material)
-        this.otherInstructions.label.mesh.matrixAutoUpdate = false
-        this.otherInstructions.container.add(this.otherInstructions.label.mesh)
-
-        // Horn
-        this.otherInstructions.horn = this.objects.add({
-            base: this.resources.items.hornBase.scene,
-            collision: this.resources.items.hornCollision.scene,
-            offset: new THREE.Vector3(this.otherInstructions.x + 1.25, this.otherInstructions.y - 2.75, 0.2),
-            rotation: new THREE.Euler(0, 0, 0.5),
-            duplicated: true,
-            shadow: { sizeX: 1.65, sizeY: 0.75, offsetZ: - 0.1, alpha: 0.4 },
-            mass: 1.5,
-            soundName: 'horn',
-            sleep: false
-        })
-    }
-
-    setTitles()
-    {
-        // Title
-        this.objects.add({
-            base: this.resources.items.introBBase.scene,
-            collision: this.resources.items.introBCollision.scene,
-            offset: new THREE.Vector3(0, 0, 0),
-            rotation: new THREE.Euler(0, 0, 0),
-            shadow: { sizeX: 1.5, sizeY: 1.5, offsetZ: - 0.6, alpha: 0.4 },
-            mass: 1.5,
-            soundName: 'brick'
-        })
-        this.objects.add({
-            base: this.resources.items.introRBase.scene,
-            collision: this.resources.items.introRCollision.scene,
-            offset: new THREE.Vector3(0, 0, 0),
-            rotation: new THREE.Euler(0, 0, 0),
-            shadow: { sizeX: 1.5, sizeY: 1.5, offsetZ: - 0.6, alpha: 0.4 },
-            mass: 1.5,
-            soundName: 'brick'
-        })
-        this.objects.add({
-            base: this.resources.items.introUBase.scene,
-            collision: this.resources.items.introUCollision.scene,
-            offset: new THREE.Vector3(0, 0, 0),
-            rotation: new THREE.Euler(0, 0, 0),
-            shadow: { sizeX: 1.5, sizeY: 1.5, offsetZ: - 0.6, alpha: 0.4 },
-            mass: 1.5,
-            soundName: 'brick'
-        })
-        this.objects.add({
-            base: this.resources.items.introNBase.scene,
-            collision: this.resources.items.introNCollision.scene,
-            offset: new THREE.Vector3(0, 0, 0),
-            rotation: new THREE.Euler(0, 0, 0),
-            duplicated: true,
-            shadow: { sizeX: 1.5, sizeY: 1.5, offsetZ: - 0.6, alpha: 0.4 },
-            mass: 1.5,
-            soundName: 'brick'
-        })
-        this.objects.add({
-            base: this.resources.items.introOBase.scene,
-            collision: this.resources.items.introOCollision.scene,
-            offset: new THREE.Vector3(0, 0, 0),
-            rotation: new THREE.Euler(0, 0, 0),
-            duplicated: true,
-            shadow: { sizeX: 1.5, sizeY: 1.5, offsetZ: - 0.6, alpha: 0.4 },
-            mass: 1.5,
-            soundName: 'brick'
-        })
-        this.objects.add({
-            base: this.resources.items.introSBase.scene,
-            collision: this.resources.items.introSCollision.scene,
-            offset: new THREE.Vector3(0, 0, 0),
-            rotation: new THREE.Euler(0, 0, 0),
-            shadow: { sizeX: 1.5, sizeY: 1.5, offsetZ: - 0.6, alpha: 0.4 },
-            mass: 1.5,
-            soundName: 'brick'
-        })
-        this.objects.add({
-            base: this.resources.items.introIBase.scene,
-            collision: this.resources.items.introICollision.scene,
-            offset: new THREE.Vector3(0, 0, 0),
-            rotation: new THREE.Euler(0, 0, 0),
-            shadow: { sizeX: 1.5, sizeY: 1.5, offsetZ: - 0.6, alpha: 0.4 },
-            mass: 1.5,
-            soundName: 'brick'
-        })
-        this.objects.add({
-            base: this.resources.items.introMBase.scene,
-            collision: this.resources.items.introMCollision.scene,
-            offset: new THREE.Vector3(0, 0, 0),
-            rotation: new THREE.Euler(0, 0, 0),
-            shadow: { sizeX: 1.5, sizeY: 1.5, offsetZ: - 0.6, alpha: 0.4 },
-            mass: 1.5,
-            soundName: 'brick'
-        })
-        this.objects.add({
-            base: this.resources.items.introOBase.scene,
-            collision: this.resources.items.introOCollision.scene,
-            offset: new THREE.Vector3(3.95, 0, 0),
-            rotation: new THREE.Euler(0, 0, 0),
-            duplicated: true,
-            shadow: { sizeX: 1.5, sizeY: 1.5, offsetZ: - 0.6, alpha: 0.4 },
-            mass: 1.5,
-            soundName: 'brick'
-        })
-        this.objects.add({
-            base: this.resources.items.introNBase.scene,
-            collision: this.resources.items.introNCollision.scene,
-            offset: new THREE.Vector3(5.85, 0, 0),
-            rotation: new THREE.Euler(0, 0, 0),
-            duplicated: true,
-            shadow: { sizeX: 1.5, sizeY: 1.5, offsetZ: - 0.6, alpha: 0.4 },
-            mass: 1.5,
-            soundName: 'brick'
-        })
-        this.objects.add({
-            base: this.resources.items.introCreativeBase.scene,
-            collision: this.resources.items.introCreativeCollision.scene,
-            offset: new THREE.Vector3(0, 0, 0),
-            rotation: new THREE.Euler(0, 0, 0.25),
-            shadow: { sizeX: 5, sizeY: 1.5, offsetZ: - 0.6, alpha: 0.3 },
-            mass: 1.5,
-            sleep: false,
-            soundName: 'brick'
-        })
-        this.objects.add({
-            base: this.resources.items.introDevBase.scene,
-            collision: this.resources.items.introDevCollision.scene,
-            offset: new THREE.Vector3(0, 0, 0),
-            rotation: new THREE.Euler(0, 0, 0),
-            shadow: { sizeX: 2.5, sizeY: 1.5, offsetZ: - 0.6, alpha: 0.3 },
-            mass: 1.5,
-            soundName: 'brick'
-        })
-    }
-
-    setTiles()
-    {
-        this.tiles.add({
-            start: new THREE.Vector2(0, - 4.5),
-            delta: new THREE.Vector2(0, - 4.5)
-        })
-    }
-
+    
+   
     setDikes()
     {
         this.dikes = {}
@@ -297,25 +152,6 @@ export default class IntroSection
             soundName: 'brick'
         }
 
-        // this.walls.add({
-        //     object:
-        //     {
-        //         ...this.dikes.brickOptions,
-        //         rotation: new THREE.Euler(0, 0, Math.PI * 0.5)
-        //     },
-        //     shape:
-        //     {
-        //         type: 'brick',
-        //         equilibrateLastLine: true,
-        //         widthCount: 3,
-        //         heightCount: 2,
-        //         position: new THREE.Vector3(this.x + 0, this.y - 4, 0),
-        //         offsetWidth: new THREE.Vector3(1.05, 0, 0),
-        //         offsetHeight: new THREE.Vector3(0, 0, 0.45),
-        //         randomOffset: new THREE.Vector3(0, 0, 0),
-        //         randomRotation: new THREE.Vector3(0, 0, 0.2)
-        //     }
-        // })
 
         this.walls.add({
             object: this.dikes.brickOptions,
@@ -459,5 +295,6 @@ export default class IntroSection
                 }
             })
         }
+    
     }
 }

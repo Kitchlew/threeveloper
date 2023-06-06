@@ -18,8 +18,8 @@ export default class CrossroadsSection
         this.container = new THREE.Object3D()
         this.container.matrixAutoUpdate = false
 
-        this.setStatic()
-        this.setTiles()
+        //this.setStatic()
+        //this.setTiles()
     }
 
     setStatic()

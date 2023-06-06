@@ -100,12 +100,7 @@ const Folio = () => {
       config: config.current,
     }) as CameraType;
     scene.add(camera.current.container);
-    time.current.on("tick", () => {
-      if (world.current && world.current.car) {
-        camera.current.target.x = world.current.car.chassis.object.position.x;
-        camera.current.target.y = world.current.car.chassis.object.position.y;
-      }
-    });
+    
   }, []);
   const setPasses = useCallback(() => {
     passes.current = {} as Passes; // Debug
@@ -262,8 +257,8 @@ const Folio = () => {
     title.current.absolutePosition = Math.round(title.current.width * 0.25);
     time.current.on("tick", () => {
       if (world.current.physics) {
-        title.current.absolutePosition +=
-          world.current.physics.car.forwardSpeed;
+        //title.current.absolutePosition +=
+        //  world.current.physics.car.forwardSpeed;
 
         if (title.current.absolutePosition < 0) {
           title.current.absolutePosition = 0;
